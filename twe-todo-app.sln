@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.329
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "twe-todo-app", "twe-todo-app\twe-todo-app.csproj", "{CABE6F3F-C772-4133-A15B-93A5A3FA80AE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CABE6F3F-C772-4133-A15B-93A5A3FA80AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CABE6F3F-C772-4133-A15B-93A5A3FA80AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CABE6F3F-C772-4133-A15B-93A5A3FA80AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CABE6F3F-C772-4133-A15B-93A5A3FA80AE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4C2D44EA-2930-4C5A-86B5-0B86F3BDC04B}
+	EndGlobalSection
+EndGlobal
