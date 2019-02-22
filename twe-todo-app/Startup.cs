@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using twe_todo_app.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Security.Claims;
 
 namespace twe_todo_app {
     public class Startup {
@@ -33,14 +34,37 @@ namespace twe_todo_app {
             services.AddDbContext<ApplicationDbContext>(options =>
                 //options.UseSqlServer(
                 //    Configuration.GetConnectionString("DefaultConnection")));
-                options.UseMySQL(Configuration.GetConnectionString("MySQLConnection")));
+                options.UseMySql(Configuration.GetConnectionString("MySQLConnection")));
             services.AddDefaultIdentity<IdentityUser>()
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddAuthentication().AddTwitter(twitterOptions => {
-                twitterOptions.ConsumerKey = "Consumer_Key";
-                twitterOptions.ConsumerSecret = "Consumer_Secret";
+                twitterOptions.ConsumerKey = Configuration["Authentication:Twitter:ConsumerKey"];
+                twitterOptions.ConsumerSecret = Configuration["Authentication:Twitter:ConsumerSecret"];
+                twitterOptions.SaveTokens = true;
+                twitterOptions.Events.OnCreatingTicket = async context => {
+                    var identity = (ClaimsIdentity)context.Principal.Identity;
+                    identity.AddClaim(new Claim(nameof(context.AccessToken), context.AccessToken));
+                    identity.AddClaim(new Claim(nameof(context.AccessTokenSecret), context.AccessTokenSecret));
+                };
+            });
+
+            //AddHttpContextAccessorの追加、これでどこからでもアクセスできるようになるっぽい
+            //https://docs.microsoft.com/ja-jp/aspnet/core/fundamentals/http-context?view=aspnetcore-2.2#use-httpcontext-from-custom-components
+            services.AddHttpContextAccessor();
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Default Password settings.
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 1;
+                options.Password.RequiredUniqueChars = 1;
+
+                options.User.RequireUniqueEmail = false;
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);

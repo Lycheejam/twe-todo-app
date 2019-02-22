@@ -2,6 +2,68 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    ViewBag.Title = "index";
 }
 
-<h1>Hello World</h1>
+@model CoreTweet.Embed
+
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="card border-primary">
+        <div class="card-body">
+            @if (Model != null)
+            {
+                <h2 class="card-title">最新タスク</h2>
+                @Html.Raw(@Model.Html)
+            }
+            else
+            {
+                <h2 class="card-title">新しくタスクを登録しましょう。</h2>
+            }
+        </div>
+        <div class="card-footer">
+            @if (Model != null)
+            {
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#registModal">
+                    タスク登録
+                </button>
+                <a class="btn btn-primary" href="/Todo/Update" role="button">タスク更新</a>
+            }
+            else
+            {
+                <a class="btn btn-primary" href="/Todo/Regist" role="button">タスク登録</a>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <div class="card border-primary">
+        <div class="card-body">
+            <h2 class="card-title">ようこそ</h2>
+            <a class="btn btn-primary btn-block" href="/Account/Login" role="button" id="loginLink">ログイン</a>
+        </div>
+    </div>
+}
+
+@*モーダルウィンドウの表示（タスク削除の注意）*@
+<div class="modal fade" id="registModal" tabindex="-1" role="dialog" aria-labelledby="registModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registModalLabel">注意</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>過去のタスクはクローズされます。</p>
+                <p>よろしいですか？</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
+                <a class="btn btn-primary" href="/Todo/Regist" role="button">タスク登録</a>
+            </div>
+        </div>
+    </div>
+</div>
