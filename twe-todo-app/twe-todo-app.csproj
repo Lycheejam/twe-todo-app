@@ -11,6 +11,12 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="CoreTweet" Version="1.0.0.483" />
+    <PackageReference Include="MySql.Data" Version="8.0.15" />
+    <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.15" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Todo\" />
+  </ItemGroup>
 </Project>

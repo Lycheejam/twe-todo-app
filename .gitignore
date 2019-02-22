@@ -262,3 +262,6 @@ __pycache__/
 
 # VisualStudio Code options
 .vscode/
+
+# EF Migration File
+twe-todo-app/Data/Migrations/

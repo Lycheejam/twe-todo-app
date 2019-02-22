@@ -31,11 +31,17 @@ namespace twe_todo_app {
             });
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                //options.UseSqlServer(
+                //    Configuration.GetConnectionString("DefaultConnection")));
+                options.UseMySQL(Configuration.GetConnectionString("MySQLConnection")));
             services.AddDefaultIdentity<IdentityUser>()
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddAuthentication().AddTwitter(twitterOptions => {
+                twitterOptions.ConsumerKey = "Consumer_Key";
+                twitterOptions.ConsumerSecret = "Consumer_Secret";
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
