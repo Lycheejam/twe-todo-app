@@ -14,6 +14,11 @@ using twe_todo_app.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Security.Claims;
+using System.Threading;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OAuth;
+using System.Net;
+using Microsoft.AspNetCore.Authentication.Twitter;
 
 namespace twe_todo_app {
     public class Startup {
@@ -27,7 +32,7 @@ namespace twe_todo_app {
         public void ConfigureServices(IServiceCollection services) {
             services.Configure<CookiePolicyOptions>(options => {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
+                //options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
@@ -40,13 +45,22 @@ namespace twe_todo_app {
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddAuthentication().AddTwitter(twitterOptions => {
-                twitterOptions.ConsumerKey = Configuration["Authentication:Twitter:ConsumerKey"];
-                twitterOptions.ConsumerSecret = Configuration["Authentication:Twitter:ConsumerSecret"];
+                twitterOptions.ConsumerKey = "ConsumerKey";
+                twitterOptions.ConsumerSecret = "ConsumerSecret";
+                //twitterOptions.Scope.Add("https://api.twitter.com/oauth/authenticate");
+                twitterOptions.ClaimActions.MapJsonKey("AccessToken", "AccessToken");
+                twitterOptions.ClaimActions.MapJsonKey("AccessTokenSecret", "AccessTokenSecret");
                 twitterOptions.SaveTokens = true;
                 twitterOptions.Events.OnCreatingTicket = async context => {
                     var identity = (ClaimsIdentity)context.Principal.Identity;
                     identity.AddClaim(new Claim(nameof(context.AccessToken), context.AccessToken));
                     identity.AddClaim(new Claim(nameof(context.AccessTokenSecret), context.AccessTokenSecret));
+
+                    //List<AuthenticationToken> tokens = context.Properties.GetTokens() as List<AuthenticationToken>;
+                    //tokens.Add(new AuthenticationToken() { Name = "ExternalAccessToken", Value = context.AccessToken });
+                    //tokens.Add(new AuthenticationToken() { Name = "ExternalAccessTokenSecret", Value = context.AccessTokenSecret });
+                    //context.Properties.StoreTokens(tokens);
+                    //return Task.CompletedTask;
                 };
             });
 
@@ -65,6 +79,7 @@ namespace twe_todo_app {
                 options.Password.RequiredUniqueChars = 1;
 
                 options.User.RequireUniqueEmail = false;
+
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);

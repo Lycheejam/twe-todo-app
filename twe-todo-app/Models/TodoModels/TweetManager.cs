@@ -1,19 +1,21 @@
 ﻿using System;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using CoreTweet;
+//using CoreTweet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using twe_todo_app.Data;
 
 namespace twe_todo_app.Models.TodoModels {
     public class TweetManager {
-        //private readonly Claim _claim;
-        //private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IHttpContextAccessor _httpcontextaccessor;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        //public TweetManager(Claim claim, IHttpContextAccessor httpContextAccessor) {
-        //    _claim = claim;
-        //    _httpContextAccessor = httpContextAccessor;
-        //}ß
+        public TweetManager(IHttpContextAccessor httpcontextaccessor) {
+            _httpcontextaccessor = httpcontextaccessor;
+        }
 
         //ReplyTweetと同じ
         public async Task<StatusResponse> PostTweet(string tweetStr) {
@@ -44,7 +46,16 @@ namespace twe_todo_app.Models.TodoModels {
 
             //User.Identity.IsAuthentication;
 
-            //var _user = _httpContextAccessor.HttpContext.User.();
+            //var accessToken = _httpcontextaccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "AccessToken")?.Value;
+            //var accessSecret = _httpcontextaccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "AccessTokenSecret")?.Value;
+
+
+            ExternalLoginInfo info = await _signInManager.GetExternalLoginInfoAsync();
+            var accessToken = info.Principal.Claims.FirstOrDefault(x => x.Type == "AccessToken")?.Value;
+            var accessSecret = info.Principal.Claims.FirstOrDefault(x => x.Type == "AccessTokenSecret")?.Value;
+
+            Console.WriteLine(accessToken);
+            Console.WriteLine(accessSecret);
 
             //httpcontextクラス httpリクエストに反応していろいろしてくれるらしい
             //var usermgr = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
@@ -58,20 +69,22 @@ namespace twe_todo_app.Models.TodoModels {
             //}
 
             //ExternalLoginInfo info = await _signInManager.GetExternalLoginInfoAsync();
-            //var accessToken = info.Principal.Claims.FirstOrDefault(x => x.Type == "AccessToken")?.Value;
-            //var accessSecret = info.Principal.Claims.FirstOrDefault(x => x.Type == "AccessTokenSecret")?.Value;
+            //var accessToken = _claims.FirstOrDefault(x => x.Type == "AccessToken")?.Value;
+            //var accessSecret = _claims.FirstOrDefault(x => x.Type == "AccessTokenSecret")?.Value;
 
+            //var accessToken = HttpContext.User.FindFirst(x => x.Type == "AccessToken")?.Value;
+            //var accessSecret = _claims.FirstOrDefault(x => x.Type == "AccessTokenSecret")?.Value;
 
 
             //Models.ReadToken APIキー取ってきてる。
             //var keys = MyTokens;
 
             //ツイート用トークン生成
-            //var tokens = Tokens.Create(keys.ConsumerKey
-            //                         , keys.ConsumerSecret
-            //                         , claimkeys.accessToken    //テーブルから参照
-            //                         , claimkeys.accessTokenSecret);    //テーブルから参照
-            return null;
+            var tokens = Tokens.Create("jTVMXAbPHFOnyBaYwb3L2Tfx4"
+                                     , "9GjqYtlmKQo3Uv0XLsyiWTuLoaJiL8ELRIa5vnI29byggnYrHf"
+                                     , accessToken    //テーブルから参照
+                                     , accessSecret);    //テーブルから参照
+            return tokens;
         }
     }
 }
