@@ -3,15 +3,14 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using CoreTweet;
-//using CoreTweet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using twe_todo_app.Data;
+using twe_todo_app.Models.Keys;
 
 namespace twe_todo_app.Models.TodoModels {
     public class TweetManager {
         private readonly IHttpContextAccessor _httpcontextaccessor;
-        private readonly SignInManager<ApplicationUser> _signInManager;
 
         public TweetManager(IHttpContextAccessor httpcontextaccessor) {
             _httpcontextaccessor = httpcontextaccessor;
@@ -38,52 +37,25 @@ namespace twe_todo_app.Models.TodoModels {
             var emb = tokens.Statuses.Oembed(tweetId);
             return emb;
         }
-        //claimテーブルの参照はコピペ AccessToken&Secretをテーブルから参照する。
-        //コピペ元 » ASP.NET Identity：Twitter認証時の情報でツイートする方法 - なか日記 
-        // http://blog.nakajix.jp/entry/2014/09/12/074000
+
+        //token作成
         public async Task<Tokens> CreateTokens() {
-            //var claimkeys = new GetToken();
-
-            //User.Identity.IsAuthentication;
-
-            //var accessToken = _httpcontextaccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "AccessToken")?.Value;
-            //var accessSecret = _httpcontextaccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "AccessTokenSecret")?.Value;
-
-
-            ExternalLoginInfo info = await _signInManager.GetExternalLoginInfoAsync();
-            var accessToken = info.Principal.Claims.FirstOrDefault(x => x.Type == "AccessToken")?.Value;
-            var accessSecret = info.Principal.Claims.FirstOrDefault(x => x.Type == "AccessTokenSecret")?.Value;
-
-            Console.WriteLine(accessToken);
-            Console.WriteLine(accessSecret);
-
-            //httpcontextクラス httpリクエストに反応していろいろしてくれるらしい
-            //var usermgr = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            //var claims = await usermgr.GetClaimsAsync(HttpContext.Current.User.Identity.GetUserId());
-
-            //var firstOrDefault = claims.FirstOrDefault(x => x.Type == "ExternalAccessToken");
-            //if (firstOrDefault != null) // TokenとTokenSecretはペアで登録されるのでnullチェックは片方のみ行う
-            //{
-            //claimkeys.accessToken = firstOrDefault.Value;
-            //claimkeys.accessTokenSecret = claims.FirstOrDefault(x => x.Type == "ExternalAccessTokenSecret").Value;
-            //}
-
-            //ExternalLoginInfo info = await _signInManager.GetExternalLoginInfoAsync();
-            //var accessToken = _claims.FirstOrDefault(x => x.Type == "AccessToken")?.Value;
-            //var accessSecret = _claims.FirstOrDefault(x => x.Type == "AccessTokenSecret")?.Value;
-
-            //var accessToken = HttpContext.User.FindFirst(x => x.Type == "AccessToken")?.Value;
-            //var accessSecret = _claims.FirstOrDefault(x => x.Type == "AccessTokenSecret")?.Value;
-
-
-            //Models.ReadToken APIキー取ってきてる。
-            //var keys = MyTokens;
+            //init user access tokens
+            var access = new AccessTokens();
+            // get user access tokens
+            var claims = _httpcontextaccessor.HttpContext.User.Claims;
+            //claims null check
+            //ありえないからチェック外しても良い？
+            if (claims.FirstOrDefault(x => x.Type == "AccessToken") != null) { // TokenとTokenSecretはペアで登録されるのでnullチェックは片方のみ行う
+                access.Token = claims.FirstOrDefault(x => x.Type == "AccessToken").Value;
+                access.TokenSecret = claims.FirstOrDefault(x => x.Type == "AccessTokenSecret").Value;
+            }
 
             //ツイート用トークン生成
-            var tokens = Tokens.Create("jTVMXAbPHFOnyBaYwb3L2Tfx4"
-                                     , "9GjqYtlmKQo3Uv0XLsyiWTuLoaJiL8ELRIa5vnI29byggnYrHf"
-                                     , accessToken    //テーブルから参照
-                                     , accessSecret);    //テーブルから参照
+            var tokens = Tokens.Create("ConsumerSecret"
+                                     , "ConsumerSecret"
+                                     , access.Token    //テーブルから参照
+                                     , access.TokenSecret);    //テーブルから参照
             return tokens;
         }
     }

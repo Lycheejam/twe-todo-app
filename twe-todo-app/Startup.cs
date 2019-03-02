@@ -40,27 +40,21 @@ namespace twe_todo_app {
                 //options.UseSqlServer(
                 //    Configuration.GetConnectionString("DefaultConnection")));
                 options.UseMySql(Configuration.GetConnectionString("MySQLConnection")));
-            services.AddDefaultIdentity<IdentityUser>()
+
+            services.AddIdentity<IdentityUser, IdentityRole>()
+            //services.AddDefaultIdentity<IdentityUser>()
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddAuthentication().AddTwitter(twitterOptions => {
-                twitterOptions.ConsumerKey = "ConsumerKey";
-                twitterOptions.ConsumerSecret = "ConsumerSecret";
-                //twitterOptions.Scope.Add("https://api.twitter.com/oauth/authenticate");
-                twitterOptions.ClaimActions.MapJsonKey("AccessToken", "AccessToken");
-                twitterOptions.ClaimActions.MapJsonKey("AccessTokenSecret", "AccessTokenSecret");
-                twitterOptions.SaveTokens = true;
-                twitterOptions.Events.OnCreatingTicket = async context => {
+                twitterOptions.ConsumerKey = Configuration["Authentication:Twitter:ConsumerKey"];
+                twitterOptions.ConsumerSecret = Configuration["Authentication:Twitter:ConsumerSecret"];
+                twitterOptions.Events.OnCreatingTicket = context => {
                     var identity = (ClaimsIdentity)context.Principal.Identity;
                     identity.AddClaim(new Claim(nameof(context.AccessToken), context.AccessToken));
                     identity.AddClaim(new Claim(nameof(context.AccessTokenSecret), context.AccessTokenSecret));
 
-                    //List<AuthenticationToken> tokens = context.Properties.GetTokens() as List<AuthenticationToken>;
-                    //tokens.Add(new AuthenticationToken() { Name = "ExternalAccessToken", Value = context.AccessToken });
-                    //tokens.Add(new AuthenticationToken() { Name = "ExternalAccessTokenSecret", Value = context.AccessTokenSecret });
-                    //context.Properties.StoreTokens(tokens);
-                    //return Task.CompletedTask;
+                    return Task.CompletedTask;
                 };
             });
 
@@ -68,8 +62,7 @@ namespace twe_todo_app {
             //https://docs.microsoft.com/ja-jp/aspnet/core/fundamentals/http-context?view=aspnetcore-2.2#use-httpcontext-from-custom-components
             services.AddHttpContextAccessor();
 
-            services.Configure<IdentityOptions>(options =>
-            {
+            services.Configure<IdentityOptions>(options => {
                 // Default Password settings.
                 options.Password.RequireDigit = false;
                 options.Password.RequireLowercase = false;

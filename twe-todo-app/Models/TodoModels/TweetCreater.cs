@@ -6,25 +6,25 @@ namespace twe_todo_app.Models.TodoModels {
         public string CreateTask(TweetResult tweet) {
             var sb = new StringBuilder();
             if (tweet.tasks.Count == 1) {
-                sb.Append("─[] " + tweet.tasks[0].task + "\r\n");
+                sb.Append("─[ ] " + tweet.tasks[0].task + "\r\n");
             } else if (tweet.tasks.Count == 2) {
-                sb.Append("┬[] " + tweet.tasks[0].task + "\r\n");
-                sb.Append("└[] " + tweet.tasks[1].task + "\r\n");
+                sb.Append("┬[ ] " + tweet.tasks[0].task + "\r\n");
+                sb.Append("└[ ] " + tweet.tasks[1].task + "\r\n");
             } else if (tweet.tasks.Count == 3) {
-                sb.Append("┬[] " + tweet.tasks[0].task + "\r\n");
-                sb.Append("├[] " + tweet.tasks[1].task + "\r\n");
-                sb.Append("└[] " + tweet.tasks[2].task + "\r\n");
+                sb.Append("┬[ ] " + tweet.tasks[0].task + "\r\n");
+                sb.Append("├[ ] " + tweet.tasks[1].task + "\r\n");
+                sb.Append("└[ ] " + tweet.tasks[2].task + "\r\n");
             } else if (tweet.tasks.Count == 4) {
-                sb.Append("┬[] " + tweet.tasks[0].task + "\r\n");
-                sb.Append("├[] " + tweet.tasks[1].task + "\r\n");
-                sb.Append("├[] " + tweet.tasks[2].task + "\r\n");
-                sb.Append("└[] " + tweet.tasks[3].task + "\r\n");
+                sb.Append("┬[ ] " + tweet.tasks[0].task + "\r\n");
+                sb.Append("├[ ] " + tweet.tasks[1].task + "\r\n");
+                sb.Append("├[ ] " + tweet.tasks[2].task + "\r\n");
+                sb.Append("└[ ] " + tweet.tasks[3].task + "\r\n");
             } else if (tweet.tasks.Count == 5) {
-                sb.Append("┬[] " + tweet.tasks[0].task + "\r\n");
-                sb.Append("├[] " + tweet.tasks[1].task + "\r\n");
-                sb.Append("├[] " + tweet.tasks[2].task + "\r\n");
-                sb.Append("├[] " + tweet.tasks[3].task + "\r\n");
-                sb.Append("└[] " + tweet.tasks[4].task + "\r\n");
+                sb.Append("┬[ ] " + tweet.tasks[0].task + "\r\n");
+                sb.Append("├[ ] " + tweet.tasks[1].task + "\r\n");
+                sb.Append("├[ ] " + tweet.tasks[2].task + "\r\n");
+                sb.Append("├[ ] " + tweet.tasks[3].task + "\r\n");
+                sb.Append("└[ ] " + tweet.tasks[4].task + "\r\n");
             }
             sb.Append("#3分間本気出す");
 
