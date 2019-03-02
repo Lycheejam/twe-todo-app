@@ -13,6 +13,12 @@ using Microsoft.EntityFrameworkCore;
 using twe_todo_app.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Security.Claims;
+using System.Threading;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OAuth;
+using System.Net;
+using Microsoft.AspNetCore.Authentication.Twitter;
 
 namespace twe_todo_app {
     public class Startup {
@@ -26,16 +32,48 @@ namespace twe_todo_app {
         public void ConfigureServices(IServiceCollection services) {
             services.Configure<CookiePolicyOptions>(options => {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
+                //options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>()
+                //options.UseSqlServer(
+                //    Configuration.GetConnectionString("DefaultConnection")));
+                options.UseMySql(Configuration.GetConnectionString("MySQLConnection")));
+
+            services.AddIdentity<IdentityUser, IdentityRole>()
+            //services.AddDefaultIdentity<IdentityUser>()
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddAuthentication().AddTwitter(twitterOptions => {
+                twitterOptions.ConsumerKey = Configuration["Authentication:Twitter:ConsumerKey"];
+                twitterOptions.ConsumerSecret = Configuration["Authentication:Twitter:ConsumerSecret"];
+                twitterOptions.Events.OnCreatingTicket = context => {
+                    var identity = (ClaimsIdentity)context.Principal.Identity;
+                    identity.AddClaim(new Claim(nameof(context.AccessToken), context.AccessToken));
+                    identity.AddClaim(new Claim(nameof(context.AccessTokenSecret), context.AccessTokenSecret));
+
+                    return Task.CompletedTask;
+                };
+            });
+
+            //AddHttpContextAccessorの追加、これでどこからでもアクセスできるようになるっぽい
+            //https://docs.microsoft.com/ja-jp/aspnet/core/fundamentals/http-context?view=aspnetcore-2.2#use-httpcontext-from-custom-components
+            services.AddHttpContextAccessor();
+
+            services.Configure<IdentityOptions>(options => {
+                // Default Password settings.
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 1;
+                options.Password.RequiredUniqueChars = 1;
+
+                options.User.RequireUniqueEmail = false;
+
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

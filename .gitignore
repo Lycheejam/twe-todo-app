@@ -259,3 +259,10 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+
+# VisualStudio Code options
+.vscode/
+
+# EF Migration File
+twe-todo-app/Data/Migrations/
+twe-todo-app/secret.json
