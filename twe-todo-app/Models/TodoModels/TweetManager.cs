@@ -39,7 +39,7 @@ namespace twe_todo_app.Models.TodoModels {
         }
 
         //token作成
-        public async Task<Tokens> CreateTokens() {
+        private async Task<Tokens> CreateTokens() {
             //init user access tokens
             var access = new AccessTokens();
             // get user access tokens
@@ -52,7 +52,7 @@ namespace twe_todo_app.Models.TodoModels {
             }
 
             //ツイート用トークン生成
-            var tokens = Tokens.Create("ConsumerSecret"
+            var tokens = Tokens.Create("ConsumerKey"
                                      , "ConsumerSecret"
                                      , access.Token    //テーブルから参照
                                      , access.TokenSecret);    //テーブルから参照

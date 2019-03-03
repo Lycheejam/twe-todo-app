@@ -41,7 +41,7 @@ namespace twe_todo_app.Controllers {
                     return View();
                 }
 
-                //var _tweetmanager = new TweetManager();
+                //ツイート取得
                 var emb = await _tweetmanager.EmbedTweetGet(res.tweetId);
                 //ログイン中 かつ タスクが存在した場合の表示
                 return View(emb);
@@ -70,8 +70,9 @@ namespace twe_todo_app.Controllers {
             //Tweet用文字列生成
             var tweet = _tweetcreater.CreateTask(_tweetresult);
 
-            //var _tweetmanager = new TweetManager();
+            //タスクをツイート＆ツイート結果を取得
             var res = await _tweetmanager.PostTweet(tweet);
+            //リプライ用にツイートIDを格納
             _tweetresult.tweetId = res.Id;
             _tweetresult.userId = _claim.Value;
 
