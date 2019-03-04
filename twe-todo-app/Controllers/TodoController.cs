@@ -18,13 +18,13 @@ namespace twe_todo_app.Controllers {
         private readonly TweetStoreManager _tweetstoremanager;
         private readonly TweetCreater _tweetcreater;
         private readonly TweetManager _tweetmanager;
-        private readonly Claim _claim;
+        private readonly Claim _userid;
         private readonly IHttpContextAccessor _httpcontextaccessor;
 
 
         // コンストラクタ
         public TodoController(IHttpContextAccessor httpContextAccessor, ApplicationDbContext context) {
-            _claim = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+            _userid = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
             _httpcontextaccessor = httpContextAccessor;
             _tweetstoremanager = new TweetStoreManager(context);
             _tweetcreater = new TweetCreater();
@@ -32,31 +32,35 @@ namespace twe_todo_app.Controllers {
         }
 
         // GET: Tweet
+        [Route("")]
         public async Task<IActionResult> Index() {
-            var id = _claim.Value;
-            if (null == id) {
-                var res = _tweetstoremanager.ReadTask(id);
-                if (null == res) {
+            if (_httpcontextaccessor.HttpContext.User.Identity.IsAuthenticated) {
+                var tweet_task = _tweetstoremanager.ReadTask(_userid.Value);
+                if (null == tweet_task) {
                     //ログイン中 かつ タスクが存在しない場合
                     return View();
                 }
 
-                //var _tweetmanager = new TweetManager();
-                var emb = await _tweetmanager.EmbedTweetGet(res.tweetId);
+                //ツイート取得
+                var emb = await _tweetmanager.EmbedTweetGet(tweet_task.tweetId);
                 //ログイン中 かつ タスクが存在した場合の表示
                 return View(emb);
             }
+
             //ログインしていない場合の初期表示
+            //20190304 これおかしくない？ログインした状態でTodo indexに遷移したらここにいっちゃうべ？
             return View();
         }
 
         //タスク登録画面初期表示
         [HttpGet]
+        [Route("Regist")]
         public IActionResult Regist() {
-            //最新タスクの削除処理
-            var id = _claim.Value;
-            if (_tweetstoremanager.DeleteTask(id)) {
-                return View();  //削除正常終了
+            if (_httpcontextaccessor.HttpContext.User.Identity.IsAuthenticated) {
+                //最新タスクの削除処理
+                if (_tweetstoremanager.DeleteTask(_userid.Value)) {
+                    return View();  //削除正常終了
+                }
             }
             //なにかによって失敗した場合
             return View("Index");
@@ -64,19 +68,23 @@ namespace twe_todo_app.Controllers {
 
         //タスク登録画面からタスクをツイート&登録
         [HttpPost]
+        [Route("Regist")]
         public async Task<IActionResult> Regist(TweetResult _tweetresult) {
-            //nullのタスクを削除
-            _tweetresult.tasks.RemoveAll(x => x.task == null);
-            //Tweet用文字列生成
-            var tweet = _tweetcreater.CreateTask(_tweetresult);
+            if (_httpcontextaccessor.HttpContext.User.Identity.IsAuthenticated) {
+                //formより取得したnullのタスクを削除
+                _tweetresult.tasks.RemoveAll(x => x.task == null);
+                //Tweet用文字列生成
+                var tweet = _tweetcreater.CreateTask(_tweetresult);
 
-            //var _tweetmanager = new TweetManager();
-            var res = await _tweetmanager.PostTweet(tweet);
-            _tweetresult.tweetId = res.Id;
-            _tweetresult.userId = _claim.Value;
+                //タスクをツイート＆ツイート結果を取得
+                var tweet_response = await _tweetmanager.PostTweet(tweet);
+                //リプライ用にツイートIDを格納
+                _tweetresult.tweetId = tweet_response.Id;
+                _tweetresult.userId = _userid.Value;
 
-            if (_tweetstoremanager.CreateTask(_tweetresult)) {
-                return View("Index", await _tweetmanager.EmbedTweetGet(_tweetresult.tweetId));    //DBへの登録が正常終了
+                if (_tweetstoremanager.CreateTask(_tweetresult)) {
+                    return View("Index", await _tweetmanager.EmbedTweetGet(_tweetresult.tweetId));    //DBへの登録が正常終了
+                }
             }
             //失敗の時
             return View("Index");
@@ -84,29 +92,35 @@ namespace twe_todo_app.Controllers {
 
         //タスク更新画面の初期表示
         [HttpGet]
+        [Route("Update")]
         public ActionResult Update() {
-            var id = _claim.Value;
-            //現状表示？
-            return View(_tweetstoremanager.ReadTask(id));
+            if (_httpcontextaccessor.HttpContext.User.Identity.IsAuthenticated) {
+                //現状表示？
+                return View(_tweetstoremanager.ReadTask(_userid.Value));
+            }
+            return View("Index");
         }
 
         //タスク更新画面からタスクのステータスを更新
         [HttpPost]
+        [Route("Update")]
         public async Task<ActionResult> Update(TweetResult _tweetresult) {
-            //Tweet用文字列生成
-            var tweet = _tweetcreater.UpdateTask(_tweetresult);
+            if (_httpcontextaccessor.HttpContext.User.Identity.IsAuthenticated) {
+                //Tweet用文字列生成
+                var tweet = _tweetcreater.UpdateTask(_tweetresult);
 
-            var id = _claim.Value;
-            var tr = _tweetstoremanager.ReadTask(id);
+                //直前 かつ 完了 ではないタスクの取得
+                var tr = _tweetstoremanager.ReadTask(_userid.Value);
 
-            //var _tweetmanager = new TweetManager();
-            var res = await _tweetmanager.ReplyTweet(tweet, tr.tweetId);
-            _tweetresult.userId = tr.userId;
-            _tweetresult.id = tr.id;
-            _tweetresult.tweetId = res.Id;
+                //直前 かつ 完了ではないタスクに対してリプライ形式でツイートする。
+                var tweet_response = await _tweetmanager.ReplyTweet(tweet, tr.tweetId);
+                _tweetresult.userId = tr.userId;
+                _tweetresult.id = tr.id;
+                _tweetresult.tweetId = tweet_response.Id;
 
-            if (_tweetstoremanager.UpdateTask(_tweetresult)) {
-                return View("Index", await _tweetmanager.EmbedTweetGet(_tweetresult.tweetId));    //DBへの登録が正常終了
+                if (_tweetstoremanager.UpdateTask(_tweetresult)) {
+                    return View("Index", await _tweetmanager.EmbedTweetGet(_tweetresult.tweetId));    //DBへの登録が正常終了
+                }
             }
             //失敗の時
             return View("Index");

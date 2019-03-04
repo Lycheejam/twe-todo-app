@@ -7,60 +7,34 @@
     ViewBag.Title = "Update";
 }
 
-<div class="card border-primary">
-    @using (Html.BeginForm("Update", "Todo", FormMethod.Post))
-    {
-        <div class="card-body">
-            <h2 class="card-title">タスク更新</h2>
-            @for (int i = 0; i < Model.tasks.Count; i++)
+<div class="row justify-content-center">
+    <div class="col-12 col-md-6">
+        <div class="card border-primary">
+            @using (Html.BeginForm("Update", "Todo", FormMethod.Post))
             {
-                int numno = i + 1;
-                <div class="form-group">
-                    <div class="input-group">
-                        @if (Model.tasks[i].state == 0)
-                        {
-                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                                <label class="btn btn-light active">
-                                    <input type="radio" name="tasks[@i].state" value="1" autocomplete="off"> ○
-                                </label>
-                                <label class="btn btn-light">
-                                    <input type="radio" name="tasks[@i].state" value="2" autocomplete="off"> ×
-                                </label>
+                <div class="card-body">
+                    <h2 class="card-title">タスク更新</h2>
+                    @for (int i = 0; i < Model.tasks.Count; i++)
+                    {
+                        int numno = i + 1;
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">No.@numno</div>
+                                </div>
+                                <input class="form-control" type="text" name="tasks[@i].task" value=@Model.tasks[i].task readonly="readonly">
+                                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                    <input class="form-control" type="text" name="tasks[@i].state" value=@Model.tasks[i].state>
+                                </div>
                             </div>
-                        }
-                        else if (Model.tasks[i].state == 1)
-                        {
-                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                                <label class="btn btn-light active">
-                                    <input type="radio" name="tasks[@i].state" value="1" autocomplete="off" checked> ○
-                                </label>
-                                <label class="btn btn-light">
-                                    <input type="radio" name="tasks[@i].state" value="2" autocomplete="off"> ×
-                                </label>
-                            </div>
-                        }
-                        else if (Model.tasks[i].state == 2)
-                        {
-                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                                <label class="btn btn-light active">
-                                    <input type="radio" name="tasks[@i].state" value="1" autocomplete="off"> ○
-                                </label>
-                                <label class="btn btn-light">
-                                    <input type="radio" name="tasks[@i].state" value="2" autocomplete="off" checked> ×
-                                </label>
-                            </div>
-                        }
-                        <div class="input-group-prepend">
-                            <div class="input-group-text">No.@numno</div>
                         </div>
-                        <input class="form-control" type="text" name="tasks[@i].task" value=@Model.tasks[i].task readonly="readonly">
-                    </div>
+                    }
+                </div>
+                <div class="card-footer">
+                    <a class="btn btn-primary" href="/" role="button">戻る</a>
+                    <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
             }
         </div>
-        <div class="card-footer">
-            <a class="btn btn-primary" href="/Todo/Index" role="button">戻る</a>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </div>
-    }
+    </div>
 </div>
