@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using twe_todo_app.Data;
+using twe_todo_app.Models.Keys;
 using twe_todo_app.Models.TodoModels;
-using System.Security.Principal;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,15 +16,17 @@ namespace twe_todo_app.Controllers {
         private readonly TweetManager _tweetmanager;
         private readonly Claim _userid;
         private readonly IHttpContextAccessor _httpcontextaccessor;
+        private readonly ConsumerKeys _consumer;
 
 
         // コンストラクタ
-        public TodoController(IHttpContextAccessor httpContextAccessor, ApplicationDbContext context) {
+        public TodoController(IHttpContextAccessor httpContextAccessor, ApplicationDbContext context, IOptions<ConsumerKeys> consumeraccesor) {
             _userid = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
             _httpcontextaccessor = httpContextAccessor;
             _tweetstoremanager = new TweetStoreManager(context);
             _tweetcreater = new TweetCreater();
-            _tweetmanager = new TweetManager(_httpcontextaccessor);
+            _consumer = consumeraccesor.Value;
+            _tweetmanager = new TweetManager(_httpcontextaccessor, _consumer);
         }
 
         // GET: Tweet

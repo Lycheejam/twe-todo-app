@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using twe_todo_app.Data;
+using twe_todo_app.Models.Keys;
 
 namespace twe_todo_app {
     public class Startup {
@@ -55,6 +56,11 @@ namespace twe_todo_app {
 
             services.Configure<IdentityOptions>(options => {
                 //
+            });
+
+            services.Configure<ConsumerKeys>(options => {
+                options.Key = Configuration["Authentication:Twitter:ConsumerKey"];
+                options.Secret = Configuration["Authentication:Twitter:ConsumerSecret"];
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
