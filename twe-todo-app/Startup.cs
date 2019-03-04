@@ -63,16 +63,7 @@ namespace twe_todo_app {
             services.AddHttpContextAccessor();
 
             services.Configure<IdentityOptions>(options => {
-                // Default Password settings.
-                options.Password.RequireDigit = false;
-                options.Password.RequireLowercase = false;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequiredLength = 1;
-                options.Password.RequiredUniqueChars = 1;
-
-                options.User.RequireUniqueEmail = false;
-
+                //
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
