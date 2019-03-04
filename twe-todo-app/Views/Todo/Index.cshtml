@@ -9,39 +9,47 @@
 
 @if (User.Identity.IsAuthenticated)
 {
-    <div class="card border-primary">
-        <div class="card-body">
-            @if (Model != null)
-            {
-                <h2 class="card-title">最新タスク</h2>
-                @Html.Raw(@Model.Html)
-            }
-            else
-            {
-                <h2 class="card-title">新しくタスクを登録しましょう。</h2>
-            }
-        </div>
-        <div class="card-footer">
-            @if (Model != null)
-            {
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#registModal">
-                    タスク登録
-                </button>
-                <a class="btn btn-primary" href="/Todo/Update" role="button">タスク更新</a>
-            }
-            else
-            {
-                <a class="btn btn-primary" href="/Todo/Regist" role="button">タスク登録</a>
-            }
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-6">
+            <div class="card border-primary">
+                <div class="card-body">
+                    @if (Model != null)
+                    {
+                        <h2 class="card-title">最新タスク</h2>
+                        @Html.Raw(@Model.Html)
+                    }
+                    else
+                    {
+                        <h2 class="card-title">新しくタスクを登録しましょう。</h2>
+                    }
+                </div>
+                <div class="card-footer">
+                    @if (Model != null)
+                    {
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#registModal">
+                            タスク登録
+                        </button>
+                        <a class="btn btn-primary" href="/Todo/Update" role="button">タスク更新</a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-primary" href="/Todo/Regist" role="button">タスク登録</a>
+                    }
+                </div>
+            </div>
         </div>
     </div>
 }
 else
 {
-    <div class="card border-primary">
-        <div class="card-body">
-            <h2 class="card-title">ようこそ</h2>
-            <a class="btn btn-primary btn-block" href="/Account/Login" role="button" id="loginLink">ログイン</a>
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-6">
+            <div class="card border-primary">
+                <div class="card-body">
+                    <h2 class="card-title">ようこそ</h2>
+                    <a class="btn btn-primary btn-block" href="/Account/Login" role="button" id="loginLink">ログイン</a>
+                </div>
+            </div>
         </div>
     </div>
 }
@@ -62,7 +70,7 @@ else
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
-                <a class="btn btn-primary" href="/Todo/Regist" role="button">タスク登録</a>
+                <a class="btn btn-primary" href="/Todo/Regist" role="button">はい</a>
             </div>
         </div>
     </div>

@@ -44,15 +44,15 @@ namespace twe_todo_app.Models.TodoModels {
         }
 
         //タスクのステータス更新とツイートID（リプライ先）の更新
-        public bool UpdateTask(TweetResult tr) {
+        public bool UpdateTask(TweetResult _tweetresult) {
             try {
-                var tresult = _db.TweetResults.Where(x => x.id == tr.id && x.endFlag == 0)
+                var tresult = _db.TweetResults.Where(x => x.id == _tweetresult.id && x.endFlag == 0)
                                          .Include(x => x.tasks)
                                          .SingleOrDefault();
-                //tresult = tr;
-                tresult.tasks = tr.tasks;
-                tresult.tweetId = tr.tweetId;
-                //db.Database.Log = sql => { Debug.Write(sql); };
+
+                //task idが新規採番された状態となるため新規タスクとして登録されてしまう。
+                tresult.tasks = _tweetresult.tasks;
+                tresult.tweetId = _tweetresult.tweetId;
                 _db.SaveChanges();
                 return true;   //正常終了値のつもり、あとでちゃんと考えようね
 
