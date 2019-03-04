@@ -32,6 +32,7 @@ namespace twe_todo_app.Controllers {
         }
 
         // GET: Tweet
+        [Route("")]
         public async Task<IActionResult> Index() {
             if (_httpcontextaccessor.HttpContext.User.Identity.IsAuthenticated) {
                 var tweet_task = _tweetstoremanager.ReadTask(_userid.Value);
@@ -53,6 +54,7 @@ namespace twe_todo_app.Controllers {
 
         //タスク登録画面初期表示
         [HttpGet]
+        [Route("Regist")]
         public IActionResult Regist() {
             if (_httpcontextaccessor.HttpContext.User.Identity.IsAuthenticated) {
                 //最新タスクの削除処理
@@ -66,6 +68,7 @@ namespace twe_todo_app.Controllers {
 
         //タスク登録画面からタスクをツイート&登録
         [HttpPost]
+        [Route("Regist")]
         public async Task<IActionResult> Regist(TweetResult _tweetresult) {
             if (_httpcontextaccessor.HttpContext.User.Identity.IsAuthenticated) {
                 //formより取得したnullのタスクを削除
@@ -89,6 +92,7 @@ namespace twe_todo_app.Controllers {
 
         //タスク更新画面の初期表示
         [HttpGet]
+        [Route("Update")]
         public ActionResult Update() {
             if (_httpcontextaccessor.HttpContext.User.Identity.IsAuthenticated) {
                 //現状表示？
@@ -99,6 +103,7 @@ namespace twe_todo_app.Controllers {
 
         //タスク更新画面からタスクのステータスを更新
         [HttpPost]
+        [Route("Update")]
         public async Task<ActionResult> Update(TweetResult _tweetresult) {
             if (_httpcontextaccessor.HttpContext.User.Identity.IsAuthenticated) {
                 //Tweet用文字列生成

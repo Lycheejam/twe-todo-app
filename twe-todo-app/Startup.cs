@@ -84,7 +84,7 @@ namespace twe_todo_app {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
             } else {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Todo/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
@@ -98,7 +98,7 @@ namespace twe_todo_app {
             app.UseMvc(routes => {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Todo}/{action=Index}/{id?}");
             });
         }
     }
