@@ -77,5 +77,18 @@ namespace twe_todo_app.Models.TodoModels {
                 throw;
             }
         }
+
+        //退会時のデータ全削除処理
+        public void DeleteAllTask(string id) {
+            try {
+                var result = _db.TweetResults.Where(x => x.userId == id)
+                                             .Include(x => x.tasks);
+                _db.TweetResults.RemoveRange(result);
+
+                _db.SaveChanges();
+            } catch (Exception) {
+                throw;
+            }
+        }
     }
 }
