@@ -1,19 +1,17 @@
-﻿using System;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using CoreTweet;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using twe_todo_app.Data;
 using twe_todo_app.Models.Keys;
 
 namespace twe_todo_app.Models.TodoModels {
     public class TweetManager {
         private readonly IHttpContextAccessor _httpcontextaccessor;
+        private readonly ConsumerKeys _consumer;
 
-        public TweetManager(IHttpContextAccessor httpcontextaccessor) {
+        public TweetManager(IHttpContextAccessor httpcontextaccessor, ConsumerKeys consumer) {
             _httpcontextaccessor = httpcontextaccessor;
+            _consumer = consumer;
         }
 
         //ReplyTweetと同じ
@@ -52,8 +50,8 @@ namespace twe_todo_app.Models.TodoModels {
             }
 
             //ツイート用トークン生成
-            var tokens = Tokens.Create("ConsumerKey"
-                                     , "ConsumerSecret"
+            var tokens = Tokens.Create(_consumer.Key
+                                     , _consumer.Secret
                                      , access.Token    //テーブルから参照
                                      , access.TokenSecret);    //テーブルから参照
             return tokens;

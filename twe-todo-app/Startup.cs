@@ -1,24 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using twe_todo_app.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Security.Claims;
-using System.Threading;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.OAuth;
-using System.Net;
-using Microsoft.AspNetCore.Authentication.Twitter;
+using twe_todo_app.Data;
+using twe_todo_app.Models.Keys;
 
 namespace twe_todo_app {
     public class Startup {
@@ -64,6 +56,11 @@ namespace twe_todo_app {
 
             services.Configure<IdentityOptions>(options => {
                 //
+            });
+
+            services.Configure<ConsumerKeys>(options => {
+                options.Key = Configuration["Authentication:Twitter:ConsumerKey"];
+                options.Secret = Configuration["Authentication:Twitter:ConsumerSecret"];
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
