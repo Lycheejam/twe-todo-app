@@ -68,6 +68,7 @@ namespace twe_todo_app {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             //URLを全て小文字化
+            //動作確認したが一部のページで小文字化を確認できなかった。要確認。
             services.Configure<RouteOptions>(options => {
                 options.LowercaseUrls = true;
             });
