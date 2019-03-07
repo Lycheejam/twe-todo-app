@@ -265,4 +265,4 @@ __pycache__/
 
 # EF Migration File
 twe-todo-app/Data/Migrations/
-twe-todo-app/secret.json
+twe-todo-app/appsettings.Production.json

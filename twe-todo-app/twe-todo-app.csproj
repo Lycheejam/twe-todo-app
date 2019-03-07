@@ -23,4 +23,10 @@
     <Folder Include="Views\Todo\" />
     <Folder Include="Models\Keys\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="appsettings.Production" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="appsettings.Production.json" />
+  </ItemGroup>
 </Project>

@@ -16,6 +16,10 @@ namespace twe_todo_app {
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+                .ConfigureAppConfiguration((hostingContext, config) => {
+                    config.AddEnvironmentVariables(prefix: "ASPNETCORE_");
+                })
+                .UseStartup<Startup>()
+                .UseUrls("http://*:5000/");
     }
 }
