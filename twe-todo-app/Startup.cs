@@ -3,9 +3,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,7 +33,7 @@ namespace twe_todo_app {
             services.AddDbContext<ApplicationDbContext>(options =>
                 //options.UseSqlServer(
                 //    Configuration.GetConnectionString("DefaultConnection")));
-                options.UseMySql(Configuration.GetConnectionString("MySQLConnection")));
+                options.UseMySql(Configuration.GetConnectionString("MySQLConnectionDev")));
 
             services.AddIdentity<IdentityUser, IdentityRole>()
             //services.AddDefaultIdentity<IdentityUser>()
@@ -64,6 +66,12 @@ namespace twe_todo_app {
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            //URLを全て小文字化
+            //動作確認したが一部のページで小文字化を確認できなかった。要確認。
+            services.Configure<RouteOptions>(options => {
+                options.LowercaseUrls = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -82,6 +90,10 @@ namespace twe_todo_app {
             app.UseCookiePolicy();
 
             app.UseAuthentication();
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
 
             app.UseMvc(routes => {
                 routes.MapRoute(

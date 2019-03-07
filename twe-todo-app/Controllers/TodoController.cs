@@ -29,9 +29,15 @@ namespace twe_todo_app.Controllers {
             _tweetmanager = new TweetManager(_httpcontextaccessor, _consumer);
         }
 
-        // GET: Tweet
+        // GET: TOP page
         [Route("")]
-        public async Task<IActionResult> Index() {
+        public IActionResult Index() {
+            return View();
+        }
+
+        // GET: Tweet
+        [Route("MyPage")]
+        public async Task<IActionResult> MyPage() {
             if (_httpcontextaccessor.HttpContext.User.Identity.IsAuthenticated) {
                 var tweet_task = _tweetstoremanager.ReadTask(_userid.Value);
                 if (null == tweet_task) {
@@ -61,7 +67,7 @@ namespace twe_todo_app.Controllers {
                 }
             }
             //なにかによって失敗した場合
-            return View("Index");
+            return View("MyPage");
         }
 
         //タスク登録画面からタスクをツイート&登録
@@ -81,7 +87,7 @@ namespace twe_todo_app.Controllers {
                 _tweetresult.userId = _userid.Value;
 
                 if (_tweetstoremanager.CreateTask(_tweetresult)) {
-                    return View("Index", await _tweetmanager.EmbedTweetGet(_tweetresult.tweetId));    //DBへの登録が正常終了
+                    return View("MyPage", await _tweetmanager.EmbedTweetGet(_tweetresult.tweetId));    //DBへの登録が正常終了
                 }
             }
             //失敗の時
@@ -96,7 +102,7 @@ namespace twe_todo_app.Controllers {
                 //現状表示？
                 return View(_tweetstoremanager.ReadTask(_userid.Value));
             }
-            return View("Index");
+            return View("MyPage");
         }
 
         //タスク更新画面からタスクのステータスを更新
@@ -117,17 +123,17 @@ namespace twe_todo_app.Controllers {
                 _tweetresult.tweetId = tweet_response.Id;
 
                 if (_tweetstoremanager.UpdateTask(_tweetresult)) {
-                    return View("Index", await _tweetmanager.EmbedTweetGet(_tweetresult.tweetId));    //DBへの登録が正常終了
+                    return View("MyPage", await _tweetmanager.EmbedTweetGet(_tweetresult.tweetId));    //DBへの登録が正常終了
                 }
             }
             //失敗の時
-            return View("Index");
+            return View("MyPage");
         }
 
         //これ別にいらなくね？
         //タスクの削除
         public IActionResult DeleteMyTask() {
-            return View("Index");
+            return View("MyPage");
         }
     }
 }

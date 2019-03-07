@@ -1,7 +1,7 @@
 ﻿@page
 @model PersonalDataModel
 @{
-    ViewData["Title"] = "Personal Data";
+    ViewData["Title"] = "退会手続き";
     ViewData["ActivePage"] = ManageNavPages.PersonalData;
 }
 
@@ -9,16 +9,12 @@
 
 <div class="row">
     <div class="col-md-6">
-        <p>Your account contains personal data that you have given us. This page allows you to download or delete that data.</p>
+        <p>Twitterアカウントを使用した外部認証時に取得した情報、本Webサービスにより作成された情報（Tweet情報）の一切を削除します。</p>
         <p>
-            <strong>Deleting this data will permanently remove your account, and this cannot be recovered.</strong>
+            <strong>退会手続きを実行されると本Webサービス内のアカウントに紐づく全ての情報が削除されデータを回復することはできなくなります。</strong>
         </p>
         <p>
-            <a id="delete" asp-page="DeletePersonalData" class="btn btn-primary">Delete</a>
+            <a id="delete" asp-page="DeletePersonalData" class="btn btn-primary">退会する</a>
         </p>
     </div>
 </div>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
