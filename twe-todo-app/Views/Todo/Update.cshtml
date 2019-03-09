@@ -10,8 +10,7 @@
 <div class="row justify-content-center">
     <div class="col-12 col-md-6">
         <div class="card border-primary">
-            @using (Html.BeginForm("Update", "Todo", FormMethod.Post))
-            {
+            <form asp-controller="Todo" asp-action="Update" method="post">
                 <div class="card-body">
                     <h2 class="card-title">タスク更新</h2>
                     @for (int i = 0; i < Model.tasks.Count; i++)
@@ -22,10 +21,10 @@
                                 <div class="input-group-prepend">
                                     <div class="input-group-text">No.@numno</div>
                                 </div>
-                                <input class="form-control" type="text" name="tasks[@i].task" value=@Model.tasks[i].task readonly="readonly">
-                                <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                                    <input class="form-control" type="text" name="tasks[@i].state" value=@Model.tasks[i].state>
-                                </div>
+                                <input asp-for="@Model.tasks[i].task" class="form-control" type="text" value=@Model.tasks[i].task readonly="readonly" />
+                                <span class="emoji-picker-container">
+                                    <input asp-for="@Model.tasks[i].state" class="form-control" type="text" value=@Model.tasks[i].state data-emojiable="true" data-emoji-input="unicode" maxlength="1" />
+                                </span>
                             </div>
                         </div>
                     }
@@ -34,7 +33,24 @@
                     <a class="btn btn-primary" href="/mypage" role="button">戻る</a>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
-            }
+            </form>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/lib/emoji-picker/js/config.js"></script>
+    <script src="~/lib/emoji-picker/js/util.js"></script>
+    <script src="~/lib/emoji-picker/js/jquery.emojiarea.js"></script>
+    <script src="~/lib/emoji-picker/js/emoji-picker.js"></script>
+    <script>
+       $(function() {
+            window.emojiPicker = new EmojiPicker({
+              emojiable_selector: '[data-emojiable=true]',
+              assetsPath: '/lib/emoji-picker/img',
+              popupButtonClasses: 'fa fa-smile-o'
+            });
+            window.emojiPicker.discover();
+       });
+    </script>
+}

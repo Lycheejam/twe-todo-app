@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace twe_todo_app.Models.TodoModels {
     public class TweetResult {
@@ -12,7 +12,8 @@ namespace twe_todo_app.Models.TodoModels {
     public class Task {
         public int id { get; set; }
         public string task { get; set; }
-        public int state { get; set; }
+        [MaxLength(1)]
+        public string state { get; set; }
     }
 
 }
