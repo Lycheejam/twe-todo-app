@@ -268,3 +268,4 @@ twe-todo-app/Data/Migrations/
 twe-todo-app/appsettings.Production.json
 
 .DS_Store
+twe-todo-app/appsettings.Development.json

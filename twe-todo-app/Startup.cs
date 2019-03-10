@@ -31,9 +31,8 @@ namespace twe_todo_app {
             });
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                //options.UseSqlServer(
-                //    Configuration.GetConnectionString("DefaultConnection")));
-                options.UseMySql(Configuration.GetConnectionString("MySQLConnectionDev")));
+                options.UseMySql(Configuration.GetConnectionString("MySQLConnection")));
+
 
             services.AddIdentity<IdentityUser, IdentityRole>()
             //services.AddDefaultIdentity<IdentityUser>()
