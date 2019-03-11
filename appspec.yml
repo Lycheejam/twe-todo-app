@@ -1,0 +1,19 @@
+version: 0.0
+os: linux
+
+#
+# twe-todo-app deployment appspec.yml
+#
+
+files:
+  - source: /
+    destination: /var/mvcapp
+hooks:
+  ApplicationStop:
+    - location: Scripts/dotnetstop.sh
+      runas: centos
+    - location: Scripts/dotnetrm.sh
+      runas: centos
+  ApplicationStart:
+    - location: Scripts/dotnetstart.sh
+      runas: centos

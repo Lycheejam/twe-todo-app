@@ -1,7 +1,7 @@
 version: 0.2
 
 #
-# GitHub -> CodeBuild -> S3 -> CloudFront
+# CodePipeline [ GitHub -> CodeBuilde -> CodeDeploy ] -> Lightsail
 #
 
 phases:
@@ -24,10 +24,6 @@ phases:
       - echo publish start
       - dotnet publish -c Release
       - echo publish complete
-      #- echo Delete S3 Bucket object...
-      #- aws s3 rm s3://${S3_BUCKET_NAME} --recursive
-      #- echo create invalidation 
-      #- aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT_DISTRIBUTION_ID} --paths '/*'
 artifacts:
   files:
     - '**/*'
