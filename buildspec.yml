@@ -24,6 +24,10 @@ phases:
       - echo publish start
       - dotnet publish -c Release
       - echo publish complete
+      - echo copy scripts dir
+      - cp -r deployscripts twe-todo-app/bin/Release/netcoreapp2.2/publish/
+      - echo copy appspec.yml
+      - cp appspec.yml twe-todo-app/bin/Release/netcoreapp2.2/publish/
 artifacts:
   files:
     - '**/*'
