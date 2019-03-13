@@ -9,6 +9,8 @@ phases:
     commands:
       - echo dotnet --version
       - dotnet --version
+      - echo copy appsettings.Production.json
+      - cp ${CODEBUILD_SRC_DIR_appsettingsProduction}/appsettings.Production.json ${CODEBUILD_SRC_DIR}/twe-todo-app/
   pre_build:
     commands:
       - echo build clean start
