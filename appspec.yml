@@ -10,8 +10,8 @@ files:
     destination: /var/mvcapp
 hooks:
   ApplicationStop:
-    - location: dotnetscripts/dotnetstop.sh
+    - location: deployscripts/dotnetstop.sh
       runas: centos
   ApplicationStart:
-    - location: dotnetscripts/dotnetstart.sh
+    - location: deployscripts/dotnetstart.sh
       runas: centos
