@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -79,24 +80,26 @@ namespace twe_todo_app.Controllers {
         /// GET : マイページ初期表示
         /// </summary>
         /// <returns>The MyPage.</returns>
+        [Authorize]
         [Route("MyPage")]
         public async Task<IActionResult> MyPage() {
-            if (_httpcontextaccessor.HttpContext.User.Identity.IsAuthenticated) {
+            //if (_httpcontextaccessor.HttpContext.User.Identity.IsAuthenticated) {
                 var resTodo = _tododbstore.Read(_userid.Value);
                 if (null == resTodo) {
                     //ログイン中 かつ タスクが存在しない場合
                     return View();
                 }
 
+                //取得成否の判定が必要
                 //ツイート取得
                 var emb = await _twitterclient.GetEmbed(resTodo.TweetId);
                 //ログイン中 かつ タスクが存在した場合の表示
                 return View(emb);
-            }
+            //}
 
             //ログインしていない場合の初期表示
             //20190304 これおかしくない？ログインした状態でTodo indexに遷移したらここにいっちゃうべ？
-            return View();
+            //return View();
         }
 
         /// <summary>
@@ -105,16 +108,16 @@ namespace twe_todo_app.Controllers {
         /// </summary>
         /// <returns>The regist page.</returns>
         [HttpGet]
+        [Authorize]
         [Route("Regist")]
         public IActionResult Regist() {
-            if (_httpcontextaccessor.HttpContext.User.Identity.IsAuthenticated) {
-                //最新Todoのクローズ処理
-                if (_tododbstore.Close(_userid.Value)) {
-                    //クローズ正常終了
-                    return View();
-                }
+            //最新Todoのクローズ処理
+            if (_tododbstore.Close(_userid.Value)) {
+                //クローズ正常終了
+                return View();
             }
             //なにかによって失敗した場合
+            //失敗の時じゃなくて成功の時にしたほうがいい
             return View("MyPage");
         }
 
@@ -125,25 +128,26 @@ namespace twe_todo_app.Controllers {
         /// <returns>The regist page.</returns>
         /// <param name="todo">Todo Class from regist page form</param>
         [HttpPost]
+        [Authorize]
         [Route("Regist")]
         public async Task<IActionResult> Regist(Todo todo) {
-            if (_httpcontextaccessor.HttpContext.User.Identity.IsAuthenticated) {
-                //formより取得したnullのタスクを削除
-                todo.Items.RemoveAll(x => x.Content == null);
-                //Tweet用文字列生成
-                var tweetString = _contentbuilder.Create(todo);
+            //formより取得したnullのタスクを削除
+            todo.Items.RemoveAll(x => x.Content == null);
+            //Tweet用文字列生成
+            var tweetString = _contentbuilder.Create(todo);
 
-                //タスクをツイート＆ツイート結果を取得
-                var resTodo = await _twitterclient.NewPost(tweetString);
-                //リプライ用にツイートIDを格納
-                todo.TweetId = resTodo.Id;
-                todo.UserId = _userid.Value;
+            //タスクをツイート＆ツイート結果を取得
+            var resTodo = await _twitterclient.NewPost(tweetString);
+            //リプライ用にツイートIDを格納
+            todo.TweetId = resTodo.Id;
+            todo.UserId = _userid.Value;
 
-                if (_tododbstore.Regist(todo)) {
-                    return View("MyPage", await _twitterclient.GetEmbed(todo.TweetId));    //DBへの登録が正常終了
-                }
+            if (_tododbstore.Regist(todo)) {
+                return View("MyPage", await _twitterclient.GetEmbed(todo.TweetId));    //DBへの登録が正常終了
             }
+            
             //失敗の時
+            //失敗の時じゃなくて成功の時にしたほうがいい
             return View("Index");
         }
 
@@ -153,13 +157,14 @@ namespace twe_todo_app.Controllers {
         /// </summary>
         /// <returns>The update page.</returns>
         [HttpGet]
+        [Authorize]
         [Route("Update")]
         public ActionResult Update() {
-            if (_httpcontextaccessor.HttpContext.User.Identity.IsAuthenticated) {
-                //現状表示？
-                return View(_tododbstore.Read(_userid.Value));
-            }
-            return View("MyPage");
+            //read処理に戻り値が必要
+            //現状表示？
+            return View(_tododbstore.Read(_userid.Value));
+
+            //return View("MyPage");
         }
 
         /// <summary>
@@ -169,24 +174,23 @@ namespace twe_todo_app.Controllers {
         /// <returns>The update.</returns>
         /// <param name="todo">Todo Class from upfate page form.</param>
         [HttpPost]
+        [Authorize]
         [Route("Update")]
         public async Task<ActionResult> Update(Todo todo) {
-            if (_httpcontextaccessor.HttpContext.User.Identity.IsAuthenticated) {
-                //Tweet用文字列生成
-                var tweetString = _contentbuilder.Update(todo);
+            //Tweet用文字列生成
+            var tweetString = _contentbuilder.Update(todo);
 
-                //直前 かつ 完了 ではないタスクの取得
-                var resTodo = _tododbstore.Read(_userid.Value);
+            //直前 かつ 完了 ではないタスクの取得
+            var resTodo = _tododbstore.Read(_userid.Value);
 
-                //直前 かつ 完了ではないタスクに対してリプライ形式でツイートする。
-                var resTweet = await _twitterclient.ReplyPost(tweetString, resTodo.TweetId);
-                todo.UserId = resTodo.UserId;
-                todo.Id = resTodo.Id;
-                todo.TweetId = resTweet.Id;
+            //直前 かつ 完了ではないタスクに対してリプライ形式でツイートする。
+            var resTweet = await _twitterclient.ReplyPost(tweetString, resTodo.TweetId);
+            todo.UserId = resTodo.UserId;
+            todo.Id = resTodo.Id;
+            todo.TweetId = resTweet.Id;
 
-                if (_tododbstore.Update(todo)) {
-                    return View("MyPage", await _twitterclient.GetEmbed(todo.TweetId));    //DBへの登録が正常終了
-                }
+            if (_tododbstore.Update(todo)) {
+                return View("MyPage", await _twitterclient.GetEmbed(todo.TweetId));    //DBへの登録が正常終了
             }
             //失敗の時
             return View("MyPage");
