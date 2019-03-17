@@ -1,10 +1,12 @@
-﻿using System.Security.Claims;
+﻿using System.Diagnostics;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using twe_todo_app.Data;
+using twe_todo_app.Models;
 using twe_todo_app.Models.Keys;
 using twe_todo_app.Models.TodoManager;
 using twe_todo_app.Models.TodoModels;
@@ -182,6 +184,12 @@ namespace twe_todo_app.Controllers {
             }
             //失敗の時
             return View("MyPage");
+        }
+
+        [Route("/Error")]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error() {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }
