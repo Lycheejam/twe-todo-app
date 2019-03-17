@@ -39,16 +39,6 @@ namespace twe_todo_app.Controllers {
         private readonly Claim _userid;
 
         /// <summary>
-        /// The httpcontextaccessor.
-        /// </summary>
-        private readonly IHttpContextAccessor _httpcontextaccessor;
-
-        /// <summary>
-        /// Twitter API Consumer Keys
-        /// </summary>
-        private readonly ConsumerKeys _consumer;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="T:twe_todo_app.Controllers.TodoController"/> class.
         /// </summary>
         /// <param name="httpContextAccessor">Http context accessor.</param>
@@ -58,11 +48,9 @@ namespace twe_todo_app.Controllers {
                             , ApplicationDbContext context
                             , IOptions<ConsumerKeys> consumeraccesor) {
             _userid = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
-            _httpcontextaccessor = httpContextAccessor;
             _tododbstore = new TodoDbStore(context);
             _contentbuilder = new ContentBuilder();
-            _consumer = consumeraccesor.Value;
-            _twitterclient = new TwitterClient(_httpcontextaccessor, _consumer);
+            _twitterclient = new TwitterClient(httpContextAccessor, consumeraccesor.Value);
         }
 
         /// <summary>
@@ -83,23 +71,18 @@ namespace twe_todo_app.Controllers {
         [Authorize]
         [Route("MyPage")]
         public async Task<IActionResult> MyPage() {
-            //if (_httpcontextaccessor.HttpContext.User.Identity.IsAuthenticated) {
-                var resTodo = _tododbstore.Read(_userid.Value);
-                if (null == resTodo) {
-                    //ログイン中 かつ タスクが存在しない場合
-                    return View();
-                }
+            //MyPage表示用のツイート情報を取得する。
+            var resTodo = _tododbstore.Read(_userid.Value);
+            if (null == resTodo) {
+                //ログイン中 かつ タスクが存在しない場合
+                return View();
+            }
 
-                //取得成否の判定が必要
-                //ツイート取得
-                var emb = await _twitterclient.GetEmbed(resTodo.TweetId);
-                //ログイン中 かつ タスクが存在した場合の表示
-                return View(emb);
-            //}
-
-            //ログインしていない場合の初期表示
-            //20190304 これおかしくない？ログインした状態でTodo indexに遷移したらここにいっちゃうべ？
-            //return View();
+            //取得成否の判定が必要 ここのエラー処理どうしよう？
+            //ツイート取得
+            var emb = await _twitterclient.GetEmbed(resTodo.TweetId);
+            //ログイン中 かつ タスクが存在した場合の表示
+            return View(emb);
         }
 
         /// <summary>
@@ -117,7 +100,6 @@ namespace twe_todo_app.Controllers {
                 return View();
             }
             //なにかによって失敗した場合
-            //失敗の時じゃなくて成功の時にしたほうがいい
             return View("MyPage");
         }
 
@@ -138,17 +120,18 @@ namespace twe_todo_app.Controllers {
 
             //タスクをツイート＆ツイート結果を取得
             var resTodo = await _twitterclient.NewPost(tweetString);
+
             //リプライ用にツイートIDを格納
             todo.TweetId = resTodo.Id;
             todo.UserId = _userid.Value;
 
+            //DBへの登録が正常終了
             if (_tododbstore.Regist(todo)) {
-                return View("MyPage", await _twitterclient.GetEmbed(todo.TweetId));    //DBへの登録が正常終了
+                return View("MyPage", await _twitterclient.GetEmbed(todo.TweetId));
             }
             
             //失敗の時
-            //失敗の時じゃなくて成功の時にしたほうがいい
-            return View("Index");
+            return View("MyPage");
         }
 
         /// <summary>
@@ -160,11 +143,14 @@ namespace twe_todo_app.Controllers {
         [Authorize]
         [Route("Update")]
         public ActionResult Update() {
-            //read処理に戻り値が必要
-            //現状表示？
-            return View(_tododbstore.Read(_userid.Value));
+            var result = _tododbstore.Read(_userid.Value);
+            if (null == result) {
+                // 過去TODOの読み込み成功
+                return View(result);
+            }
 
-            //return View("MyPage");
+            // 過去TODOの読み込み失敗の時 エラーページ表示にしたい
+            return View("MyPage");
         }
 
         /// <summary>
@@ -181,16 +167,18 @@ namespace twe_todo_app.Controllers {
             var tweetString = _contentbuilder.Update(todo);
 
             //直前 かつ 完了 ではないタスクの取得
-            var resTodo = _tododbstore.Read(_userid.Value);
+            var resultTodo = _tododbstore.Read(_userid.Value);
+            if (null == resultTodo) {
+                //直前 かつ 完了ではないタスクに対してリプライ形式でツイートする。
+                var resTweet = await _twitterclient.ReplyPost(tweetString, resultTodo.TweetId);
+                todo.UserId = resultTodo.UserId;
+                todo.Id = resultTodo.Id;
+                todo.TweetId = resTweet.Id;
 
-            //直前 かつ 完了ではないタスクに対してリプライ形式でツイートする。
-            var resTweet = await _twitterclient.ReplyPost(tweetString, resTodo.TweetId);
-            todo.UserId = resTodo.UserId;
-            todo.Id = resTodo.Id;
-            todo.TweetId = resTweet.Id;
-
-            if (_tododbstore.Update(todo)) {
-                return View("MyPage", await _twitterclient.GetEmbed(todo.TweetId));    //DBへの登録が正常終了
+                if (_tododbstore.Update(todo)) {
+                    //DBへの登録が正常終了
+                    return View("MyPage", await _twitterclient.GetEmbed(todo.TweetId));
+                }
             }
             //失敗の時
             return View("MyPage");

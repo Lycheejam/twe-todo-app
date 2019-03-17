@@ -5,6 +5,8 @@
 
 Twitter主体の生活をしている私ならではのTwitterを主体としたTodoアプリです。
 
+Site：[３分間本気出す。](http://todo.kitigai.org)
+
 # 使用イメージ
 
 |||||
@@ -40,8 +42,9 @@ Todoの管理ステータスを顔文字に変更しました。
 # インフラ構成
 * AWS Lightsail $5プラン
   * 1CPU、Mem 1G
+* DNS：AWS Route 53
 * Nginxでリバースプロキシ
-* DB MySQL 5.7
+* DB：MySQL 5.7
 * AWS CodePipelineで自動ビルド・デプロイ環境構築済み
   * 構成：GitHub + CodeBuild + CodeDeploy
 

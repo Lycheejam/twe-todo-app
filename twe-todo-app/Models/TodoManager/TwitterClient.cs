@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using CoreTweet;
 using Microsoft.AspNetCore.Http;
@@ -37,9 +38,13 @@ namespace twe_todo_app.Models.TodoManager {
         /// <returns>ツイート投稿レスポンス</returns>
         /// <param name="tweetStr">ツイート文字列</param>
         public async Task<StatusResponse> NewPost(string tweetStr) {
-            var tokens = await CreateTokens();
-            var res = tokens.Statuses.Update(status => tweetStr);
-            return res;
+            try {
+                var tokens = await CreateTokens();
+                var res = tokens.Statuses.Update(status => tweetStr);
+                return res;
+            } catch (Exception e) {
+                throw e;
+            }
         }
 
         /// <summary>
@@ -50,10 +55,14 @@ namespace twe_todo_app.Models.TodoManager {
         /// <param name="tweetStr">ツイート文字列</param>
         /// <param name="tweetId">リプライ先ツイートID</param>
         public async Task<StatusResponse> ReplyPost(string tweetStr, long tweetId) {
-            var tokens = await CreateTokens();
-            var res = tokens.Statuses.Update(status => tweetStr
-                                            , in_reply_to_status_id => tweetId);
-            return res;
+            try {
+                var tokens = await CreateTokens();
+                var res = tokens.Statuses.Update(status => tweetStr
+                                                , in_reply_to_status_id => tweetId);
+                return res;
+            } catch (Exception e) {
+                throw e;
+            }
         }
 
         /// <summary>
@@ -63,9 +72,13 @@ namespace twe_todo_app.Models.TodoManager {
         /// <returns>取得対象のEmbed情報</returns>
         /// <param name="tweetId">Embed取得対象のツイートID</param>
         public async Task<Embed> GetEmbed(long tweetId) {
-            var tokens = await CreateTokens();
-            var emb = tokens.Statuses.Oembed(tweetId);
-            return emb;
+            try {
+                var tokens = await CreateTokens();
+                var emb = tokens.Statuses.Oembed(tweetId);
+                return emb;
+            } catch (Exception e) {
+                throw e;
+            }
         }
 
         /// <summary>

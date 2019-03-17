@@ -41,8 +41,8 @@ namespace twe_todo_app.Models.TodoManager {
                 _db.SaveChanges();
 
                 return true;   //正常終了値のつもり、あとでちゃんと考えようね
-            } catch (Exception) {
-                throw;
+            } catch (Exception e) {
+                throw e;
             }
         }
 
@@ -59,8 +59,8 @@ namespace twe_todo_app.Models.TodoManager {
                                                 .SingleOrDefault();
                 //最後に見つかったレコードは必ずendFlagが0?
                 return result;
-            } catch (Exception) {
-                throw;
+            } catch (Exception e) {
+                throw e;
             }
         }
 
@@ -82,8 +82,8 @@ namespace twe_todo_app.Models.TodoManager {
                 _db.SaveChanges();
                 return true;   //正常終了値のつもり、あとでちゃんと考えようね
 
-            } catch (Exception) {
-                throw;
+            } catch (Exception e) {
+                throw e;
             }
         }
 
@@ -103,8 +103,8 @@ namespace twe_todo_app.Models.TodoManager {
                     _db.SaveChanges();
                 }
                 return true;
-            } catch (Exception) {
-                throw;
+            } catch (Exception e) {
+                throw e;
             }
         }
 
@@ -120,8 +120,8 @@ namespace twe_todo_app.Models.TodoManager {
                 _db.Todos.RemoveRange(result);
 
                 _db.SaveChanges();
-            } catch (Exception) {
-                throw;
+            } catch (Exception e) {
+                throw e;
             }
         }
     }
