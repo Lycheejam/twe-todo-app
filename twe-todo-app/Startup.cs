@@ -84,6 +84,8 @@ namespace twe_todo_app {
                 app.UseHsts();
             }
 
+            app.UseStatusCodePagesWithReExecute("/Error/{0}");
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
