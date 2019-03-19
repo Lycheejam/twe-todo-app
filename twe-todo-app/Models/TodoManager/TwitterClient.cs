@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using CoreTweet;
 using Microsoft.AspNetCore.Http;
@@ -41,7 +42,10 @@ namespace twe_todo_app.Models.TodoManager {
             try {
                 var tokens = await CreateTokens();
                 var res = tokens.Statuses.Update(status => tweetStr);
+
                 return res;
+            } catch (TwitterException twiex) {
+                throw twiex;
             } catch (Exception e) {
                 throw e;
             }
@@ -60,6 +64,8 @@ namespace twe_todo_app.Models.TodoManager {
                 var res = tokens.Statuses.Update(status => tweetStr
                                                 , in_reply_to_status_id => tweetId);
                 return res;
+            } catch (TwitterException twiex) {
+                throw twiex;
             } catch (Exception e) {
                 throw e;
             }
@@ -76,6 +82,12 @@ namespace twe_todo_app.Models.TodoManager {
                 var tokens = await CreateTokens();
                 var emb = tokens.Statuses.Oembed(tweetId);
                 return emb;
+            } catch (TwitterException twiex) {
+                //tweetが存在いしなかった場合
+                if (twiex.Status == HttpStatusCode.NotFound) {
+                    return null;
+                }
+                throw twiex;
             } catch (Exception e) {
                 throw e;
             }
