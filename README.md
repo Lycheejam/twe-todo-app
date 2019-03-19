@@ -44,6 +44,7 @@ Site：[３分間本気出す。](http://todo.kitigai.org)
 * DBはMySQL 5.7を使用しています。
 * AWS CodePipelineで自動ビルド・デプロイ環境構築済み
   * 構成：GitHub + CodeBuild + CodeDeploy
+  * 本番/ステージングの２種類の環境構築しステージング検証→本番リリースとなる。
 
 ![](images/todoapp.png)
 
