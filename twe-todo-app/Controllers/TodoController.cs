@@ -149,7 +149,7 @@ namespace twe_todo_app.Controllers {
         [Route("Update")]
         public ActionResult Update() {
             var result = _tododbstore.Read(_userid.Value);
-            if (null == result) {
+            if (null != result) {
                 // 過去TODOの読み込み成功
                 return View(result);
             }
@@ -173,7 +173,7 @@ namespace twe_todo_app.Controllers {
 
             //直前 かつ 完了 ではないタスクの取得
             var resultTodo = _tododbstore.Read(_userid.Value);
-            if (null == resultTodo) {
+            if (null != resultTodo) {
                 //直前 かつ 完了ではないタスクに対してリプライ形式でツイートする。
                 var resTweet = await _twitterclient.ReplyPost(tweetString, resultTodo.TweetId);
                 todo.UserId = resultTodo.UserId;
