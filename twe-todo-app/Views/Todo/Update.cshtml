@@ -1,7 +1,7 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@model twe_todo_app.Models.TodoModels.TweetResult
+@model twe_todo_app.Models.TodoModels.Todo
 
 @{
     ViewBag.Title = "タスクの更新";
@@ -13,7 +13,7 @@
             <form asp-controller="Todo" asp-action="Update" method="post">
                 <div class="card-body">
                     <h2 class="card-title">タスク更新</h2>
-                    @for (int i = 0; i < Model.tasks.Count; i++)
+                    @for (int i = 0; i < Model.Items.Count; i++)
                     {
                         int numno = i + 1;
                         <div class="form-group">
@@ -21,9 +21,9 @@
                                 <div class="input-group-prepend">
                                     <div class="input-group-text">No.@numno</div>
                                 </div>
-                                <input asp-for="@Model.tasks[i].task" class="form-control" type="text" value=@Model.tasks[i].task readonly="readonly" />
+                                <input asp-for="@Model.Items[i].Content" class="form-control" type="text" value=@Model.Items[i].Content readonly="readonly" />
                                 <span class="emoji-picker-container">
-                                    <input asp-for="@Model.tasks[i].state" class="form-control" type="text" value=@Model.tasks[i].state data-emojiable="true" data-emoji-input="unicode" maxlength="1" />
+                                    <input asp-for="@Model.Items[i].State" class="form-control" type="text" value=@Model.Items[i].State data-emojiable="true" data-emoji-input="unicode" maxlength="1" />
                                 </span>
                             </div>
                         </div>

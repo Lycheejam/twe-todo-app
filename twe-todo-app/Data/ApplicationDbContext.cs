@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using twe_todo_app.Models.TodoModels;
 
@@ -11,6 +8,7 @@ namespace twe_todo_app.Data {
             : base(options) {
         }
 
-        public DbSet<TweetResult> TweetResults { get; set; }
+        public DbSet<Todo> Todos { get; set; }
+        public DbSet<Item> Items { get; set; }
     }
 }

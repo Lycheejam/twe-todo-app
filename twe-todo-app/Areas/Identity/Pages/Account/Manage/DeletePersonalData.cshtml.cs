@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using twe_todo_app.Data;
+using twe_todo_app.Models.TodoManager;
 using twe_todo_app.Models.TodoModels;
 
 namespace twe_todo_app.Areas.Identity.Pages.Account.Manage {
@@ -54,8 +55,8 @@ namespace twe_todo_app.Areas.Identity.Pages.Account.Manage {
             }
 
             //task削除処理
-            var tweetstoremanager = new TweetStoreManager(_context);
-            tweetstoremanager.DeleteAllTask(user.Id);
+            var tododbstore = new TodoDbStore(_context);
+            tododbstore.Delete(user.Id);
 
             var result = await _userManager.DeleteAsync(user);
             var userId = await _userManager.GetUserIdAsync(user);
