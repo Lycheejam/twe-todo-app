@@ -64,6 +64,8 @@ Site：[３分間本気出す。](http://todo.kitigai.org)
 * [AWS Lightsail（CentOS 7）にMySQL 5.7の構築 - あとらすの備忘録](http://kitigai.hatenablog.com/entry/2019/03/16/195149)
 * [ASP\.NET CoreアプリをCentOSでサービス登録し自動起動を設定する - あとらすの備忘録](http://kitigai.hatenablog.com/entry/2019/03/16/202454)
 * [CodeDeployを使用したデプロイがタイムアウトとなり失敗する - あとらすの備忘録](http://kitigai.hatenablog.com/entry/2019/03/16/230208)
+* [ASP\.NET Core MVC スキャフォールドでコードを自動生成する \- あとらすの備忘録](https://kitigai.hatenablog.com/entry/2019/03/24/233758)
+* [GitHub \+ AWS CodePipeline\|Build\|Deployで自動ビルド・デプロイ環境の構築 \- あとらすの備忘録](https://kitigai.hatenablog.com/entry/2019/04/01/203347)
 
 # 関連プロジェクト
 
