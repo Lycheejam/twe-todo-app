@@ -1,7 +1,7 @@
 
 **既に本アプリはクローズしました。**
 
-# What's this...
+# Todo App
 
 * やらないといけないけど中々やる気にならない  
   * 周りに宣言して逃げ場をなくそう。  
@@ -11,7 +11,7 @@
 
 そこで、Twitter主体の生活をしている私ならではのTwitterを主体としたTodoアプリです。
 
-Site：[３分間本気出す。](http://todo.kitigai.org)
+Site：[３分間本気出す。]()
 
 # 使用イメージ
 
@@ -50,30 +50,3 @@ Site：[３分間本気出す。](http://todo.kitigai.org)
   * 本番/ステージングの２種類の環境構築しステージング検証→本番リリースとなる。
 
 ![](images/todoapp.png)
-
-# 関連ブログ記事
-このプロジェクトに関連するブログ記事です。
-
-* [dotnet cliのMVCテンプレートの認証オプション - あとらすの備忘録](http://kitigai.hatenablog.com/entry/2019/02/26/223534)
-* [ASP.NET Core IdentityでTwitter認証をするとAn unhandled exception occurred while processing the requestが発生する - あとらすの備忘録](http://kitigai.hatenablog.com/entry/2019/02/27/003134)
-* [Mac環境のASP.NET Core MVCでdocker上のMySQLを使用する - あとらすの備忘録](http://kitigai.hatenablog.com/entry/2019/03/01/005640)
-* [ASP.NET CoreからMySQLへCRUDするとNo coercion operator is defined between types 'System.Int16' and 'System.Boolean'エラーが発生する - あとらすの備忘録](http://kitigai.hatenablog.com/entry/2019/03/01/030000)
-* [.NET Core EFとMySQLでDuplicate entry '0' for key 'PRIMARY'エラーが発生 - あとらすの備忘録](http://kitigai.hatenablog.com/entry/2019/03/03/015358)
-* [.NET Core EFとMySQLでField 'Id' doesn't have a default valueエラーが発生 - あとらすの備忘録](http://kitigai.hatenablog.com/entry/2019/03/03/025337)
-* [Dockerで稼働するMySQLの文字コードを設定する話 - あとらすの備忘録](http://kitigai.hatenablog.com/entry/2019/03/03/203310)
-* [EntityFramework CoreでDBの状態を過去のマイグレーションに戻す。 - あとらすの備忘録](http://kitigai.hatenablog.com/entry/2019/03/05/163622)
-* [ASP\.NET CoreでAPIキーなどの秘匿情報をsecret.jsonを使用して秘匿する - あとらすの備忘録](http://kitigai.hatenablog.com/entry/2019/03/05/190813)
-* [ASP\.NET Core MVCアプリをAWS Lightsail（CentOS 7）で公開する。 - あとらすの備忘録](http://kitigai.hatenablog.com/entry/2019/03/16/182112)
-* [AWS Lightsail（CentOS 7）にMySQL 5.7の構築 - あとらすの備忘録](http://kitigai.hatenablog.com/entry/2019/03/16/195149)
-* [ASP\.NET CoreアプリをCentOSでサービス登録し自動起動を設定する - あとらすの備忘録](http://kitigai.hatenablog.com/entry/2019/03/16/202454)
-* [CodeDeployを使用したデプロイがタイムアウトとなり失敗する - あとらすの備忘録](http://kitigai.hatenablog.com/entry/2019/03/16/230208)
-* [ASP\.NET Core MVC スキャフォールドでコードを自動生成する \- あとらすの備忘録](https://kitigai.hatenablog.com/entry/2019/03/24/233758)
-* [GitHub \+ AWS CodePipeline\|Build\|Deployで自動ビルド・デプロイ環境の構築 \- あとらすの備忘録](https://kitigai.hatenablog.com/entry/2019/04/01/203347)
-
-# 関連プロジェクト
-
-本プロジェクトは下記のプロジェクトと関連しています。
-
-* 
-* 
-* 
